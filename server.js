@@ -25,8 +25,8 @@ connectDB();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: 'http://localhost:5173', // your frontend's URL
-  credentials: true                // allow cookies to be sent
+  origin: 'http://localhost:5173', 
+  credentials: true                
 }));
 
 // Make sure uploads directory exists
@@ -48,15 +48,15 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Contact_Keeper API!');
 });
 
-// Error handling middleware
-// app.use((err, req, res, next) => {
-//   console.error(err.stack);
-//   res.status(500).json({
-//     success: false,
-//     message: "Internal server error",
-//     error: process.env.NODE_ENV === "development" ? err.message : null
-//   });
-// });
+//Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: "Internal server error",
+    error: process.env.NODE_ENV === "development" ? err.message : null
+  });
+});
 
 // Start server
 const port = process.env.PORT || 1000;
