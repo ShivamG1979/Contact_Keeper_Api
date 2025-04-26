@@ -52,8 +52,8 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Check if user exists
+    
+    // Find the user
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(400).json({
@@ -62,7 +62,7 @@ export const login = async (req, res) => {
       });
     }
 
-    // Check if password is correct
+    // Verify password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({
@@ -71,15 +71,14 @@ export const login = async (req, res) => {
       });
     }
 
-    // Generate token and set cookie
+    // Generate token
     const token = user.generateToken();
 
-    res.status(200).cookie("token", token, {
-      expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-      httpOnly: true,
-    }).json({
+    // Send the token as a cookie or in the response
+    res.status(200).json({
       success: true,
       message: "Logged in successfully",
+      token,  // Send the token in the response
       user: {
         _id: user._id,
         name: user.name,
@@ -93,6 +92,7 @@ export const login = async (req, res) => {
     });
   }
 };
+
 
 // Logout user
 export const logout = async (req, res) => {
