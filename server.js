@@ -24,10 +24,22 @@ connectDB();
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+const allowedOrigins = [
+  'http://localhost:5173',            
+  'https://contact-keeper-client.vercel.app/'  
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173', 
-  credentials: true                
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
+
 
 // Make sure uploads directory exists
 import fs from 'fs';
